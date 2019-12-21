@@ -16,7 +16,7 @@
         [Tooltip("Reset when exiting this state.")]
         public FsmBool resetOnExit;
 
-        [Tooltip("Repeats every frame")] 
+        [Tooltip("Repeats every frame")]
         public bool everyFrame;
 
         private TMPro.TextMeshProUGUI tmpText;

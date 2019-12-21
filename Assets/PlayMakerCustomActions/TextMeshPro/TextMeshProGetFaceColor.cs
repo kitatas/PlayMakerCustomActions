@@ -14,7 +14,7 @@
         [Tooltip("The Color of the TextMeshProUGUI component")]
         public FsmColor color;
 
-        [Tooltip("Repeats every frame")] 
+        [Tooltip("Repeats every frame")]
         public bool everyFrame;
 
         private TMPro.TextMeshProUGUI tmpText;

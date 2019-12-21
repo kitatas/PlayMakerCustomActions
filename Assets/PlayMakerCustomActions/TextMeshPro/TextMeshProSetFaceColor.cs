@@ -2,122 +2,124 @@
 
 namespace HutongGames.PlayMaker.Actions
 {
-	[ActionCategory("TextMeshPro")]
-	[Tooltip("Set TMP Text Face Color.")]
-	public class TextMeshProSetFaceColor : ComponentAction<TMPro.TextMeshProUGUI>
-	{
-		[RequiredField]
-		[CheckForComponent(typeof(TMPro.TextMeshProUGUI))]
-		[Tooltip("The GameObject with a TextMeshProUGUI component.")]
-		public FsmOwnerDefault gameObject;
+    [ActionCategory("TextMeshPro")]
+    [Tooltip("Set TMP Text Face Color")]
+    public class TextMeshProSetFaceColor : ComponentAction<TMPro.TextMeshProUGUI>
+    {
+        [RequiredField]
+        [CheckForComponent(typeof(TMPro.TextMeshProUGUI))]
+        [Tooltip("The GameObject with a TextMeshProUGUI component.")]
+        public FsmOwnerDefault gameObject;
 
-		[Tooltip("The Color of the TextMeshProUGUI component. Leave to none and set the individual color values, for example to affect just the alpha channel")]
-		public FsmColor color;
+        [Tooltip("The Color of the TextMeshProUGUI component. Leave to none and set the individual color values, for example to affect just the alpha channel")]
+        public FsmColor color;
 
-		[Tooltip("The red channel Color of the TextMeshProUGUI component. Leave to none for no effect, else it overrides the color property")]
-		public FsmFloat red;
+        [Tooltip("The red channel Color of the TextMeshProUGUI component. Leave to none for no effect, else it overrides the color property")]
+        public FsmFloat red;
 
-		[Tooltip("The green channel Color of the TextMeshProUGUI component. Leave to none for no effect, else it overrides the color property")]
-		public FsmFloat green;
+        [Tooltip("The green channel Color of the TextMeshProUGUI component. Leave to none for no effect, else it overrides the color property")]
+        public FsmFloat green;
 
-		[Tooltip("The blue channel Color of the TextMeshProUGUI component. Leave to none for no effect, else it overrides the color property")]
-		public FsmFloat blue;
+        [Tooltip("The blue channel Color of the TextMeshProUGUI component. Leave to none for no effect, else it overrides the color property")]
+        public FsmFloat blue;
 
-		[Tooltip("The alpha channel Color of the TextMeshProUGUI component. Leave to none for no effect, else it overrides the color property")]
-		public FsmFloat alpha;
+        [Tooltip("The alpha channel Color of the TextMeshProUGUI component. Leave to none for no effect, else it overrides the color property")]
+        public FsmFloat alpha;
 
-		[Tooltip("Reset when exiting this state.")]
-		public FsmBool resetOnExit;
+        [Tooltip("Reset when exiting this state.")]
+        public FsmBool resetOnExit;
 
-		[Tooltip("Repeats every frame, useful for animation")]
-		public bool everyFrame;
+        [Tooltip("Repeats every frame, useful for animation")]
+        public bool everyFrame;
 
-		private TMPro.TextMeshProUGUI tmpText;
-		private Color originalColor;
+        private TMPro.TextMeshProUGUI tmpText;
+        private Color originalColor;
 
-		public override void Reset()
-		{
-			gameObject = null;
-			color = null;
+        public override void Reset()
+        {
+            gameObject = null;
+            color = null;
 
-			red = new FsmFloat {UseVariable = true};
-			green = new FsmFloat {UseVariable = true};
-			blue = new FsmFloat {UseVariable = true};
-			alpha = new FsmFloat {UseVariable = true};
+            red = new FsmFloat {UseVariable = true};
+            green = new FsmFloat {UseVariable = true};
+            blue = new FsmFloat {UseVariable = true};
+            alpha = new FsmFloat {UseVariable = true};
 
-			resetOnExit = null;
-			everyFrame = false;
-		}
+            resetOnExit = null;
+            everyFrame = false;
+        }
 
-		public override void OnEnter()
-		{
+        public override void OnEnter()
+        {
+            var go = Fsm.GetOwnerDefaultTarget(gameObject);
+            if (UpdateCache(go))
+            {
+                tmpText = cachedComponent;
+            }
 
-			var go = Fsm.GetOwnerDefaultTarget(gameObject);
-			if (UpdateCache(go))
-			{
-				tmpText = cachedComponent;
-			}
+            originalColor = tmpText.faceColor;
 
-			originalColor = tmpText.faceColor;
+            DoSetFaceColorValue();
 
-			DoSetColorValue();
+            if (!everyFrame)
+            {
+                Finish();
+            }
+        }
 
-			if (!everyFrame)
-			{
-				Finish();
-			}
-		}
+        public override void OnUpdate()
+        {
+            DoSetFaceColorValue();
+        }
 
-		public override void OnUpdate()
-		{
-			DoSetColorValue();
-		}
+        public override void OnExit()
+        {
+            if (tmpText == null)
+            {
+                return;
+            }
 
-		private void DoSetColorValue()
-		{
-			if (tmpText == null) return;
+            if (resetOnExit.Value)
+            {
+                tmpText.faceColor = originalColor;
+            }
+        }
 
-			var _color = tmpText.faceColor;
+        private void DoSetFaceColorValue()
+        {
+            if (tmpText == null)
+            {
+                return;
+            }
 
-			if (!color.IsNone)
-			{
-				_color = color.Value;
-			}
+            var col = tmpText.faceColor;
 
-			if (!red.IsNone)
-			{
-				_color.r = (byte)red.Value;
-			}
+            if (!color.IsNone)
+            {
+                col = color.Value;
+            }
 
-			if (!green.IsNone)
-			{
-				_color.g = (byte)green.Value;
-			}
+            if (!red.IsNone)
+            {
+                col.r = (byte) red.Value;
+            }
 
-			if (!blue.IsNone)
-			{
-				_color.b = (byte)blue.Value;
-			}
+            if (!green.IsNone)
+            {
+                col.g = (byte) green.Value;
+            }
 
-			if (!alpha.IsNone)
-			{
-				_color.a = (byte)alpha.Value;
-			}
+            if (!blue.IsNone)
+            {
+                col.b = (byte) blue.Value;
+            }
 
-			tmpText.faceColor = _color;
-		}
+            if (!alpha.IsNone)
+            {
+                col.a = (byte) alpha.Value;
+            }
 
-		public override void OnExit()
-		{
-			if (tmpText == null)
-			{
-				return;
-			}
-
-			if (resetOnExit.Value)
-			{
-				tmpText.faceColor = originalColor;
-			}
-		}
-	}
+            tmpText.faceColor = col;
+        }
+    }
 }
