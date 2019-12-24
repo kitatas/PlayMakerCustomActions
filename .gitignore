@@ -59,6 +59,9 @@ sysinfo.txt
 crashlytics-build.properties
 
 
+# Rider
+.idea
+
 # Plugins
 Assets/Plugins
 Assets/Plugins.meta
