@@ -23,6 +23,7 @@
         {
             gameObject = null;
             color = null;
+            everyFrame = false;
         }
 
         public override void OnEnter()

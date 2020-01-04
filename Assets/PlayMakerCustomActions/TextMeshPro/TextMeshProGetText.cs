@@ -21,6 +21,7 @@
 
         public override void Reset()
         {
+            gameObject = null;
             text = null;
             everyFrame = false;
         }
