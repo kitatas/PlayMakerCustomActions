@@ -62,6 +62,10 @@ crashlytics-build.properties
 # Rider
 .idea
 
+# Editor
+Assets/Editor
+Assets/Editor.meta
+
 # Plugins
 Assets/Plugins
 Assets/Plugins.meta
